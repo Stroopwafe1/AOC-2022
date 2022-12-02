@@ -10,21 +10,21 @@ fn main() {
     let contents = fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
 
-    let mut highestCalories = -100;
+    let mut highest_calories = -100;
     let mut all_calories = Vec::new();
-    let mut currCall = 0;
+    let mut curr_call = 0;
 
     let mut lines = contents.lines();
     while let Some(line) = lines.next() {
         if line == "" {
-            if currCall > highestCalories {
-                highestCalories = currCall;
+            if curr_call > highest_calories {
+                highest_calories = curr_call;
             }
-            all_calories.push(currCall);
-            currCall = 0;
+            all_calories.push(curr_call);
+            curr_call = 0;
             continue;
         }
-        currCall += line.parse::<i32>().unwrap();
+        curr_call += line.parse::<i32>().unwrap();
         println!("Line: {}", line);
     }
 
@@ -32,7 +32,7 @@ fn main() {
     let size = all_calories.len();
     let top_three = all_calories[size - 1] + all_calories[size - 2] + all_calories[size - 3];
 
-    println!("Highest calories =  {}", highestCalories);
+    println!("Highest calories =  {}", highest_calories);
     println!("Top three = {}", top_three);
     //println!("With text:\n{contents}");
 }
