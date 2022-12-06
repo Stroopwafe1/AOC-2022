@@ -6,8 +6,7 @@ fn main() {
     let file_path = &args[1];
     println!("In file {}", file_path);
 
-    let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
     let (stacks_str, instructions) = contents.split_once("\n\n").unwrap();
 
@@ -18,12 +17,16 @@ fn main() {
         }
         let mut i = 0;
         while i < line.len() {
-            let max_split = if i + 4 >= line.len() {line.len()} else {i + 4};
+            let max_split = if i + 4 >= line.len() {
+                line.len()
+            } else {
+                i + 4
+            };
             let split = &line[i..max_split];
-            
+
             if i / 4 >= stacks.len() {
                 stacks.push(Vec::new());
-            } 
+            }
             if !split.trim().is_empty() {
                 stacks[i / 4].push(split.trim().chars().nth(1).unwrap())
             }
@@ -36,9 +39,9 @@ fn main() {
     }
 
     for instruction in instructions.lines() {
-        let mut nums = instruction.split_whitespace()
-        .filter(|split| split.parse::<usize>().is_ok())
-        .map(|s| s.parse::<usize>().unwrap());
+        let mut nums = instruction
+            .split_whitespace()
+            .filter_map(|split| split.parse::<usize>().ok());
 
         let amount = nums.next().unwrap();
         let source = nums.next().unwrap();
@@ -62,6 +65,6 @@ fn main() {
         }
     }
 
-    let answer: String = stacks.into_iter().map(|v| v[v.len() - 1]).collect::<Vec<char>>().iter().collect();
+    let answer: String = stacks.iter().map(|v| v.last().unwrap()).collect();
     println!("Answer: {:?}", answer)
 }
