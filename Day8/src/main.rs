@@ -8,7 +8,7 @@ fn main() {
 
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
     let char_arr: Vec<char> = contents.chars().filter(|c| *c != '\n').collect();
-    let mut i:usize = 0;
+    let mut i: usize = 0;
     let mut visible_trees = 0;
     let mut highest_score = i32::MIN;
     for line in contents.lines() {
@@ -35,11 +35,11 @@ fn check_if_visible(arr: &Vec<char>, line_len: usize, i: usize) -> bool {
     let row_max = arr.len() / line_len - 1;
     let col_max = line_len - 1;
     let char = *arr.get(i).unwrap();
-    
+
     if row == 0 || row == row_max || col == 0 || col == col_max {
         return true;
     }
-    
+
     // if visible in row
     let mut row_up_visible = true;
     for r in 1..=row {
@@ -80,7 +80,7 @@ fn get_scenic_score(arr: &Vec<char>, line_len: usize, i: usize) -> i32 {
     let row_max = arr.len() / line_len - 1;
     let col_max = line_len - 1;
     let char = *arr.get(i).unwrap();
-    
+
     let mut up_score = 0;
     for r in 1..=row {
         up_score += 1;
