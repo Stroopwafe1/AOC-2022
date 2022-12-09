@@ -1,8 +1,10 @@
+mod coord;
+
 use std::collections::HashSet;
 use std::env;
 use std::fs;
 
-type Coord = (i32, i32);
+use crate::coord::coordinates::Coord2D;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -11,10 +13,10 @@ fn main() {
 
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
     let len = 10;
-    let mut snake1: Vec<Coord> = vec![(0, 0); 2]; // Head is 0
-    let mut snake2: Vec<Coord> = vec![(0, 0); len]; // Head is 0
-    let mut visited_coords1: HashSet<Coord> = HashSet::new();
-    let mut visited_coords2: HashSet<Coord> = HashSet::new();
+    let mut snake1: Vec<Coord2D> = vec![Coord2D::new(0, 0); 2]; // Head is 0
+    let mut snake2: Vec<Coord2D> = vec![Coord2D::new(0, 0); len]; // Head is 0
+    let mut visited_coords1: HashSet<Coord2D> = HashSet::new();
+    let mut visited_coords2: HashSet<Coord2D> = HashSet::new();
 
     for line in contents.lines() {
         let motion: (&str, u32) = line
@@ -28,47 +30,34 @@ fn main() {
     println!("Part two: {}", visited_coords2.len());
 }
 
-fn move_dir(snake: &mut Vec<Coord>, coords: &mut HashSet<Coord>, direction: &str, amount: u32, len: usize) {
+fn move_dir(snake: &mut Vec<Coord2D>, coords: &mut HashSet<Coord2D>, direction: &str, amount: u32, len: usize) {
     for _ in 0..amount {
-        match direction {
-            "U" => snake.get_mut(0).unwrap().1 += 1,
-            "D" => snake.get_mut(0).unwrap().1 -= 1,
-            "L" => snake.get_mut(0).unwrap().0 -= 1,
-            "R" => snake.get_mut(0).unwrap().0 += 1,
+        let head_movement = match direction {
+            "U" => Coord2D {x:  0, y:  1},
+            "D" => Coord2D {x:  0, y: -1},
+            "L" => Coord2D {x: -1, y:  0},
+            "R" => Coord2D {x:  1, y:  0},
             _ => unreachable!()
-        }
+        };
+        *snake.get_mut(0).unwrap() += head_movement;
         move_snake(snake, coords, len);
     }
 }
 
-fn move_snake(snake: &mut Vec<Coord>, coords: &mut HashSet<Coord>, len: usize) {
+fn move_snake(snake: &mut Vec<Coord2D>, coords: &mut HashSet<Coord2D>, len: usize) {
     for i in 1..len {
         let h = *snake.get_mut(i - 1).unwrap();
-        let mut t = snake.get_mut(i).unwrap();
-        let a = h.0 - t.0;
-        let b = h.1 - t.1;
-        let c = a*a + b*b;
+        let t = snake.get_mut(i).unwrap();
+        let c = h.get_distance(*t);
+        let diff = h - *t;
 
         if c <= 2 { // Can only be 0, 1, 2
             continue;
         } else if c == 4 { // One space difference
-            if a == 0 {
-                t.1 = if b == -2 { h.1 + 1 } else { h.1 - 1 };
-            } else {
-                t.0 = if a == -2 { h.0 + 1 } else { h.0 - 1 };
-            }
+            *t = h + -diff.normalise();
         } else {
             // Move diagonally
-            if t.1 < h.1 {
-                t.1 += 1;
-            } else if t.1 > h.1 {
-                t.1 -= 1;
-            }
-            if t.0 < h.0 {
-                t.0 += 1;
-            } else if t.0 > h.0 {
-                t.0 -= 1;
-            }
+            *t += diff.normalise();
         }
     }
     let last = *snake.last_mut().unwrap();
