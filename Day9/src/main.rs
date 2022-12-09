@@ -20,9 +20,9 @@ fn main() {
 
     for line in contents.lines() {
         let motion: (&str, u32) = line
-        .split_once(' ')
-        .map(|f| (f.0, f.1.parse::<u32>().unwrap()))
-        .unwrap();
+            .split_once(' ')
+            .map(|f| (f.0, f.1.parse::<u32>().unwrap()))
+            .unwrap();
         move_dir(&mut snake1, &mut visited_coords1, motion.0, motion.1, 2);
         move_dir(&mut snake2, &mut visited_coords2, motion.0, motion.1, len);
     }
@@ -30,14 +30,20 @@ fn main() {
     println!("Part two: {}", visited_coords2.len());
 }
 
-fn move_dir(snake: &mut Vec<Coord2D>, coords: &mut HashSet<Coord2D>, direction: &str, amount: u32, len: usize) {
+fn move_dir(
+    snake: &mut Vec<Coord2D>,
+    coords: &mut HashSet<Coord2D>,
+    direction: &str,
+    amount: u32,
+    len: usize,
+) {
     for _ in 0..amount {
         let head_movement = match direction {
-            "U" => Coord2D {x:  0, y:  1},
-            "D" => Coord2D {x:  0, y: -1},
-            "L" => Coord2D {x: -1, y:  0},
-            "R" => Coord2D {x:  1, y:  0},
-            _ => unreachable!()
+            "U" => Coord2D { x:  0, y:  1 },
+            "D" => Coord2D { x:  0, y: -1 },
+            "L" => Coord2D { x: -1, y:  0 },
+            "R" => Coord2D { x:  1, y:  0 },
+            _ => unreachable!(),
         };
         *snake.get_mut(0).unwrap() += head_movement;
         move_snake(snake, coords, len);
@@ -51,9 +57,11 @@ fn move_snake(snake: &mut Vec<Coord2D>, coords: &mut HashSet<Coord2D>, len: usiz
         let c = h.get_distance(*t);
         let diff = h - *t;
 
-        if c <= 2 { // Can only be 0, 1, 2
+        if c <= 2 {
+            // Can only be 0, 1, 2
             continue;
-        } else if c == 4 { // One space difference
+        } else if c == 4 {
+            // One space difference
             *t = h + -diff.normalise();
         } else {
             // Move diagonally

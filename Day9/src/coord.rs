@@ -1,10 +1,9 @@
 pub mod coordinates {
 
-    #[derive(Clone, Copy)]
-    #[derive(Eq, Hash, PartialEq)]
+    #[derive(Clone, Copy, Eq, Hash, PartialEq)]
     pub struct Coord2D {
         pub x: i32,
-        pub y: i32
+        pub y: i32,
     }
 
     impl Coord2D {
@@ -15,7 +14,7 @@ pub mod coordinates {
         pub fn get_distance(self, other: Self) -> i32 {
             let a = self.x - other.x;
             let b = self.y - other.y;
-            a*a + b*b
+            a * a + b * b
         }
 
         #[allow(dead_code)]
@@ -24,22 +23,22 @@ pub mod coordinates {
         }
 
         /**
-         Normalises any coordinate to a -1 to 1 scale
-         */
+        Normalises any coordinate to a -1 to 1 scale
+        */
         pub fn normalise(self) -> Self {
             Coord2D {
                 x: match self.x {
                     _ if self.x >= 1 => 1,
                     _ if self.x == 0 => 0,
                     _ if self.x <= -1 => -1,
-                    _ => 0
+                    _ => 0,
                 },
                 y: match self.y {
                     _ if self.y >= 1 => 1,
                     _ if self.y == 0 => 0,
                     _ if self.y <= -1 => -1,
-                    _ => 0
-                } 
+                    _ => 0,
+                },
             }
         }
     }
@@ -48,7 +47,7 @@ pub mod coordinates {
         fn add(self, rhs: Self) -> Self::Output {
             Coord2D {
                 x: self.x + rhs.x,
-                y: self.y + rhs.y
+                y: self.y + rhs.y,
             }
         }
 
@@ -68,7 +67,7 @@ pub mod coordinates {
         fn sub(self, rhs: Self) -> Self::Output {
             Coord2D {
                 x: self.x - rhs.x,
-                y: self.y - rhs.y
+                y: self.y - rhs.y,
             }
         }
     }
