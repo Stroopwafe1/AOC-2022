@@ -10,7 +10,7 @@ fn main() {
 
     enum Instruction {
         NOOP,
-        ADDX(i32)
+        ADDX(i32),
     }
 
     let mut cycle_count = 1;
@@ -18,19 +18,18 @@ fn main() {
     let mut x_val = 1;
     let mut crt_pos = 0;
     for line in contents.lines() {
-        let instruction: Instruction;
-        if line == "noop" {
-            instruction = Instruction::NOOP;
-        } else {
-            let split = line.split_once(' ').unwrap();
-            instruction = Instruction::ADDX(split.1.parse::<i32>().unwrap());
-        }
+        let split = line.split_once(' ').unwrap_or(("noop", ""));
+
+        let instruction = match split.0 {
+            "noop" => Instruction::NOOP,
+            "addx" => Instruction::ADDX(split.1.parse().unwrap()),
+            _ => unreachable!(),
+        };
+
+        cycle_count += 1;
         match instruction {
-            Instruction::NOOP => { 
-                cycle_count += 1;
-                draw(&mut crt_pos, x_val);
-            },
-            Instruction::ADDX(val) => { 
+            Instruction::NOOP => draw(&mut crt_pos, x_val),
+            Instruction::ADDX(val) => {
                 cycle_count += 1;
                 draw(&mut crt_pos, x_val);
 
@@ -43,8 +42,8 @@ fn main() {
                 x_val += val;
             }
         }
-        
-        if cycle_count % 40 == 20 && cycle_count <= 220 {
+
+        if cycle_count % 40 == 20 {
             total_strength += x_val * cycle_count;
         }
     }
