@@ -53,12 +53,18 @@ fn parse(contents: &String) -> Vec<Monkey> {
             op: OP::ADD(0),
             test_val: 0,
             monke_if_true: 0,
-            monke_if_false: 0
+            monke_if_false: 0,
         };
         for line in s.lines() {
-            if line.starts_with("Monkey") { continue };
+            if line.starts_with("Monkey") {
+                continue;
+            };
             let (val1, val2) = line.trim().split_once(":").unwrap();
-            let nums: Vec<i64> = val2.trim().split(" ").filter_map(|v| v.replace(",", "").parse::<i64>().ok()).collect();
+            let nums: Vec<i64> = val2
+                .trim()
+                .split(" ")
+                .filter_map(|v| v.replace(",", "").parse::<i64>().ok())
+                .collect();
             match val1 {
                 "Starting items" => monkey.items = nums,
                 "Operation" => {
@@ -67,11 +73,11 @@ fn parse(contents: &String) -> Vec<Monkey> {
                     } else {
                         monkey.op = OP::ADD(nums[0]);
                     }
-                },
+                }
                 "Test" => monkey.test_val = nums[0],
                 "If true" => monkey.monke_if_true = nums[0] as i32,
                 "If false" => monkey.monke_if_false = nums[0] as i32,
-                _ => unreachable!()
+                _ => unreachable!(),
             }
         }
         monkeys.push(monkey);
