@@ -34,7 +34,7 @@ impl Grid {
         let x_max = if x == len_x - 1 { x } else { x + 1 };
         
         println!("Y: min({}), max({}), X: min({}), max({})", y_min, y_max, x_min, x_max);
-        let curr = self.get_square_mut(x, y);
+        let mut curr = self.get_square_mut(x, y);
         curr.visited = true;
         
         for y_inner in y_min..=y_max {
@@ -42,9 +42,10 @@ impl Grid {
                 if (x, y) == (x_inner, y_inner) {
                     continue;
                 }
-                let next = self.get_square_mut(x_inner, y_inner);
                 
-                if !self.possible(curr, next) {
+                let mut next = self.get_square_mut(x_inner, y_inner);
+                
+                if !self.possible(&curr, &next) {
                     continue;
                 }
 
